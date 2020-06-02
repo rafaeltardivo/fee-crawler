@@ -16,7 +16,7 @@ type converterInterface interface {
 // Exchange rates implementation of converter interface
 type exchangeRatesConverter struct{}
 
-// Convert exchange data responde to structured data
+// Convert exchange rates data response to structured data
 func (c *exchangeRatesConverter) ConvertRates(
 	fee string, client clientInterface, parser parserInterface) (*rateData, error) {
 
