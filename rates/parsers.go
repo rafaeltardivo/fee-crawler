@@ -11,6 +11,7 @@ type parserInterface interface {
 	ParseRates([]byte) (interface{}, error)
 }
 
+// Exchange rates implementation of parser interface
 type exchangeRatesParser struct{}
 
 type exchangeRateCurrencyPayload struct {

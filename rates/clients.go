@@ -12,6 +12,7 @@ type clientInterface interface {
 	GetRates() ([]byte, error)
 }
 
+// ExchangeRates client implementation of clientInterface
 type exchangeRatesClient struct {
 	url     string
 	filters string
