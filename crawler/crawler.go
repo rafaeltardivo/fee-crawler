@@ -9,16 +9,21 @@ import (
 	"github.com/gocolly/colly"
 )
 
-// SmartMEI fee crawler implementation
-type SmartMEIcrawlerStruct struct {
-	collector *colly.Collector
+// Fee crawler interface
+type feeCrawlerInterface interface {
+	findPlanIndex(string, *goquery.Selection) (int, error)
+	findFee(string, int, *goquery.Selection) (string, error)
 }
+
+// SmartMEI implementation of fee crawler interface
+type SmartMEIcrawlerStruct struct{}
 
 // Crawls header looking for plan element
 // The container is mapped as a table, so the plan index will be used in the fee search
-func (s *SmartMEIcrawlerStruct) findPlanIndex(plan string, header *goquery.Selection) (int, error) {
+func (s *SmartMEIcrawlerStruct) findPlanIndex(plan string, rows *goquery.Selection) (int, error) {
 	planIndex := -1
 
+	header := rows.First()
 	header.Children().EachWithBreak(func(i int, child *goquery.Selection) bool {
 		if strings.Contains(child.Text(), plan) {
 			planIndex = i
@@ -54,22 +59,25 @@ func (s *SmartMEIcrawlerStruct) findFee(plan string, index int, rows *goquery.Se
 	return fee, nil
 }
 
-// Starts crawling proccess
+// Crawling proccess enntrypoint
+// Returns raw fee
 func CrawlFee(plan string) (string, error) {
 	var container *colly.HTMLElement
 	crawler := NewSmartMEICrawler()
+	collector := NewSmartMEICollector()
 
-	crawler.collector.OnHTML(`div[id="tarifas-2"]`, func(e *colly.HTMLElement) {
+	collector.OnHTML(`div[id="tarifas-2"]`, func(e *colly.HTMLElement) {
 		container = e
 	})
-	crawler.collector.Visit("http://smartmei.com.br/")
+	collector.Visit("http://smartmei.com.br/")
 
 	return crawl(plan, container.DOM.Children(), crawler)
 }
 
-func crawl(plan string, rows *goquery.Selection, crawler *SmartMEIcrawlerStruct) (string, error) {
+// Manages crawling proccess and returns fee
+func crawl(plan string, rows *goquery.Selection, crawler feeCrawlerInterface) (string, error) {
 
-	index, err := crawler.findPlanIndex(plan, rows.First())
+	index, err := crawler.findPlanIndex(plan, rows)
 	if err != nil {
 		return "", err
 	}
@@ -82,8 +90,8 @@ func crawl(plan string, rows *goquery.Selection, crawler *SmartMEIcrawlerStruct)
 	return fee, nil
 }
 
-// Returns a new SmartMEI Crawler
-func NewSmartMEICrawler() *SmartMEIcrawlerStruct {
+// Returns a new SmartMEICollector
+func NewSmartMEICollector() *colly.Collector {
 	agents := [4]string{
 		"Chrome 70.0.3538.77",
 		"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:77.0) Gecko/20190101 Firefox/77.0",
@@ -94,11 +102,14 @@ func NewSmartMEICrawler() *SmartMEIcrawlerStruct {
 	// The goal is to reduce action patterns
 	userAgent := agents[rand.Intn(len(agents)-1)+1]
 
-	return &SmartMEIcrawlerStruct{
-		collector: colly.NewCollector(
-			colly.UserAgent(userAgent),
-			colly.AllowedDomains("smartmei.com.br", "www.smartmei.com.br"),
-			colly.MaxDepth(2),
-		),
-	}
+	return colly.NewCollector(
+		colly.UserAgent(userAgent),
+		colly.AllowedDomains("smartmei.com.br", "www.smartmei.com.br"),
+		colly.MaxDepth(2),
+	)
+}
+
+// Returns a new SmartMEI Crawler
+func NewSmartMEICrawler() feeCrawlerInterface {
+	return &SmartMEIcrawlerStruct{}
 }
