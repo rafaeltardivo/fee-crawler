@@ -1,9 +1,10 @@
 package crawler
 
-import "errors"
+import (
+	"fmt"
+)
 
-// Error for plan not found
-var errPlanIndexNotFound = errors.New("Plan index not found")
-
-// Error for fee not found
-var errPlanFeeNotFound = errors.New("Fee fee not found")
+// Error wrapper for crawl errors
+func crawlError(msg string) error {
+	return fmt.Errorf("Crawler error: %s", msg)
+}
