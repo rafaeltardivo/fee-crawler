@@ -71,6 +71,10 @@ func CrawlFee(plan string) (string, error) {
 	})
 	collector.Visit("http://smartmei.com.br/")
 
+	if container == nil {
+		return "", crawlError(fmt.Sprintf("container not found"))
+	}
+
 	return crawl(plan, container.DOM.Children(), crawler)
 }
 
