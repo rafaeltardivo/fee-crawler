@@ -14,6 +14,16 @@ func TestNormalizeFeeToBRL(t *testing.T) {
 	g.Expect(ret).Should(gomega.Equal("1.00"), "Return should have the same value and . as decimal separator")
 }
 
+func TestSanitizeFeeNotFound(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+
+	ret, err := sanitizeFee("Sometext")
+
+	g.Expect(ret).To(gomega.Equal(""), "Return should be empty")
+	g.Expect(err).Should(gomega.HaveOccurred(), "An error should have occurred")
+	g.Expect(err).Should(gomega.MatchError(parseError("fee not found")), "Error should be a parseError")
+}
+
 func TestSanitizeFee(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 

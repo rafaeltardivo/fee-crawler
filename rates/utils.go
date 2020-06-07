@@ -5,7 +5,15 @@ import (
 	"strings"
 
 	"github.com/shopspring/decimal"
+	"github.com/sirupsen/logrus"
 )
+
+type rateData struct {
+	BRL  string `json:"BRL"`
+	USD  string `json:"USD"`
+	EUR  string `json:"EUR"`
+	Date string `json:"date"`
+}
 
 // Normalizes and returns the fee value using BRL floating point criteria
 func normalizeFeeToBRL(fee string) string {
@@ -18,7 +26,7 @@ func sanitizeFee(fee string) (string, error) {
 	rawValue := re.FindStringSubmatch(fee)
 
 	if len(rawValue) <= 0 {
-		return "", convertError("Fee not found")
+		return "", parseError("fee not found")
 	}
 
 	return rawValue[0], nil
@@ -49,3 +57,5 @@ func toRateData(fee string, payload *exchangeRateResponsePayload) (*rateData, er
 		Date: payload.Date,
 	}, nil
 }
+
+var logger = logrus.New()
