@@ -32,25 +32,27 @@ func (p *exchangeRatesParser) ParseRates(data []byte) (interface{}, error) {
 
 	err := json.Unmarshal(data, &payload)
 	if err != nil {
-		return nil, parseError(err.Error())
+		logger.Error(err)
+		return nil, parseError("could not parse payload")
 	}
 
 	// Input range validation (OWASP recommendation)
 	if payload.Rates.EUR <= 0 || payload.Rates.USD <= 0 {
-		return nil, parseError(fmt.Sprintf("Invalid rate data"))
+		return nil, parseError(fmt.Sprintf("invalid rate data"))
 	}
 
 	// Input format validation (OWASP recommendation)
 	re := regexp.MustCompile("((19|20)\\d\\d)-(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[012])")
 	if re.MatchString(payload.Date) == false {
-		return nil, parseError(fmt.Sprintf("Invalid date format"))
+		return nil, parseError(fmt.Sprintf("invalid date format"))
 	}
 
 	// Input domain validation (OWASP recommendation)
 	if payload.Base != "BRL" {
-		return nil, parseError(fmt.Sprintf("Invalid base rate"))
+		return nil, parseError(fmt.Sprintf("invalid base rate"))
 	}
 
+	logger.Info("parsed rates payload")
 	return &payload, nil
 }
 

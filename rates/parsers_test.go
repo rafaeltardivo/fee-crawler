@@ -8,13 +8,13 @@ import (
 	"github.com/onsi/gomega"
 )
 
-func TestNewExchangeRatesParserType(t *testing.T) {
+func TestnewExchangeRatesParserType(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 
-	parser := NewExchangeRatesParser()
-	_, sameType := parser.(parserInterface)
+	parser := newExchangeRatesParser()
+	_, isOne := parser.(parserInterface)
 
-	g.Expect(sameType).To(gomega.BeTrue(), "parser is-one clientInterface")
+	g.Expect(isOne).To(gomega.BeTrue(), "parser is-one parserInterface")
 }
 
 func TestParserRatesRatesError(t *testing.T) {
@@ -30,12 +30,12 @@ func TestParserRatesRatesError(t *testing.T) {
 	rawBody := new(bytes.Buffer)
 	json.NewEncoder(rawBody).Encode(exchangeRateResponseMock)
 
-	parser := NewExchangeRatesParser()
+	parser := newExchangeRatesParser()
 	ret, err := parser.ParseRates(rawBody.Bytes())
 
 	g.Expect(ret).Should(gomega.BeNil(), "Return should be nil")
 	g.Expect(err).Should(gomega.HaveOccurred(), "An error should have occurred")
-	g.Expect(err).Should(gomega.MatchError(parseError("Invalid rate data")), "Error should be a parseError")
+	g.Expect(err).Should(gomega.MatchError(parseError("invalid rate data")), "Error should be a parseError")
 }
 
 func TestParserRatesDateError(t *testing.T) {
@@ -51,12 +51,12 @@ func TestParserRatesDateError(t *testing.T) {
 	rawBody := new(bytes.Buffer)
 	json.NewEncoder(rawBody).Encode(exchangeRateResponseMock)
 
-	parser := NewExchangeRatesParser()
+	parser := newExchangeRatesParser()
 	ret, err := parser.ParseRates(rawBody.Bytes())
 
 	g.Expect(ret).Should(gomega.BeNil(), "Return should be nil")
 	g.Expect(err).Should(gomega.HaveOccurred(), "An error should have occurred")
-	g.Expect(err).Should(gomega.MatchError(parseError("Invalid date format")), "Error should be a parseError")
+	g.Expect(err).Should(gomega.MatchError(parseError("invalid date format")), "Error should be a parseError")
 }
 
 func TestParserRatesBaseError(t *testing.T) {
@@ -72,12 +72,12 @@ func TestParserRatesBaseError(t *testing.T) {
 	rawBody := new(bytes.Buffer)
 	json.NewEncoder(rawBody).Encode(exchangeRateResponseMock)
 
-	parser := NewExchangeRatesParser()
+	parser := newExchangeRatesParser()
 	ret, err := parser.ParseRates(rawBody.Bytes())
 
 	g.Expect(ret).Should(gomega.BeNil(), "Return should be nil")
 	g.Expect(err).Should(gomega.HaveOccurred(), "An error should have occurred")
-	g.Expect(err).Should(gomega.MatchError(parseError("Invalid base rate")), "Error should be a parseError")
+	g.Expect(err).Should(gomega.MatchError(parseError("invalid base rate")), "Error should be a parseError")
 }
 
 func TestParserRates(t *testing.T) {
@@ -93,10 +93,10 @@ func TestParserRates(t *testing.T) {
 	rawBody := new(bytes.Buffer)
 	json.NewEncoder(rawBody).Encode(exchangeRateResponseMock)
 
-	parser := NewExchangeRatesParser()
+	parser := newExchangeRatesParser()
 	ret, err := parser.ParseRates(rawBody.Bytes())
 	exchangeRateData, _ := ret.(*exchangeRateResponsePayload)
 
-	g.Expect(ret).Should(gomega.Equal(exchangeRateData), "Return should be equal to exchangeRateData")
 	g.Expect(err).ShouldNot(gomega.HaveOccurred(), "An error should not have occurred")
+	g.Expect(ret).Should(gomega.Equal(exchangeRateData), "Return should be equal to exchangeRateData")
 }
