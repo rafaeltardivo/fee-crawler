@@ -55,6 +55,6 @@ func (p *exchangeRatesParser) ParseRates(data []byte) (interface{}, error) {
 }
 
 // Creates and returns a new exchange rates parser according to parserInterface
-func NewExchangeRatesParser() parserInterface {
+func newExchangeRatesParser() parserInterface {
 	return &exchangeRatesParser{}
 }
