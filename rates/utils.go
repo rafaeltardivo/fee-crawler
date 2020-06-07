@@ -15,6 +15,12 @@ type rateData struct {
 	Date string `json:"date"`
 }
 
+var logger = logrus.New()
+
+func init() {
+	logger.SetFormatter(&logrus.JSONFormatter{})
+}
+
 // Normalizes and returns the fee value using BRL floating point criteria
 func normalizeFeeToBRL(fee string) string {
 	return strings.Replace(fee, ",", ".", 1)
@@ -57,5 +63,3 @@ func toRateData(fee string, payload *exchangeRateResponsePayload) (*rateData, er
 		Date: payload.Date,
 	}, nil
 }
-
-var logger = logrus.New()
