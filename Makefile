@@ -5,4 +5,4 @@ up:
 up-detached:
 	docker-compose up -d
 test:
-	go test ./...
+	go test ./crawler/ ./rates/
