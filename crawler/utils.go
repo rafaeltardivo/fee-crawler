@@ -14,6 +14,13 @@ func init() {
 	logger.SetFormatter(&logrus.JSONFormatter{})
 }
 
+// Crawler response struct
+type CrawlerResponse struct {
+	Amount      string
+	Description string
+	Err         error
+}
+
 // Sanitizes and returns fee amount and description
 func sanitizeFeeString(rawFee string) (string, string, error) {
 	description := ""
@@ -79,4 +86,13 @@ func normalizeAmountToBRL(rawAmount string) string {
 
 	logger.Info(fmt.Sprintf("normalized amount: %s", normalizedAmount))
 	return strings.Replace(rawAmount, ",", ".", 1)
+}
+
+// Converts values to CrawlerResponse
+func toCrawlerResponse(amount string, description string, err error) CrawlerResponse {
+	return CrawlerResponse{
+		Amount:      amount,
+		Description: description,
+		Err:         err,
+	}
 }

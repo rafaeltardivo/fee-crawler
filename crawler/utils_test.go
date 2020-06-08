@@ -72,3 +72,12 @@ func TestNormalizeAmountToBRL(t *testing.T) {
 
 	g.Expect(description).To(gomega.Equal("7.00"), "Amount should be equal to 7.00")
 }
+
+func TestToCrawlerResponse(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+	crawlerResponse := toCrawlerResponse("7.00", "Some description", nil)
+
+	g.Expect(crawlerResponse.Amount).To(gomega.Equal("7.00"), "Amount should be equal to 7.00")
+	g.Expect(crawlerResponse.Description).To(gomega.Equal("Some description"), "Description should be equal to Some description")
+	g.Expect(crawlerResponse.Err).To(gomega.BeNil(), "Err should be equal to 7.00")
+}
