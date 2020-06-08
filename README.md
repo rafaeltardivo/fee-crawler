@@ -33,13 +33,20 @@ A crawler that systematically browses SmartMEI website plan fee section.
 ## How it Works
 
 ### Crawler
-The SmartMEI fee crawler is powered by [colly](http://go-colly.org/). It has reduced crawl frontier and searches primarily for  **fees** content container element and maps it as a matrix.
+The SmartMEI fee crawler is powered by [colly](http://go-colly.org/). It has reduced crawl frontier and searches primarily for  **fees** content container element and maps it as a matrix:
 
 
-The goal of mapping the container as a matrix is to increase change resilience, since web crawlers are vulnerable to failures caused by layout changes. So, as long as it remains a "matrix-like" container, the crawler should works fine.
+|      ...       | Plano x    | Plan  y |
+|----------------|------------|---------|
+| Transferência  |    ...     |   ...   |
+|      ...       |    ...     |   ...   |
+
+
+
+The goal of mapping the container as a matrix is to increase change resilience, since web crawlers are vulnerable to failures caused by layout changes. So, as long as it remains a "matrix-like" container, the crawler will won't be affected.
 
 ### Exchange Rates API client
-The Exchange Rates API Client is a REST client for [Exchange Rates API](https://exchangeratesapi.io/). According to [Europa Central Bank](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html) Rate values are updated around 16:00 CET on every work day, so a [cache](#cache) model was built to improve response time.
+The Exchange Rates API Client is a REST client for [Exchange Rates API](https://exchangeratesapi.io/). According to [Europa Central Bank](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html), Rate values are updated around 16:00 CET on every work day, so a [cache](#cache) model was built to improve response time.
 
 #### Cache
 
@@ -54,7 +61,7 @@ Simple [Redis](https://redislabs.com/)-based cache.
 1 - Local cache  
 2 - Exchange Rates API
 
-**OBS**: Exchange Rates API Client was built implements the [Repository](https://martinfowler.com/eaaCatalog/repository.html) design pattern.
+**OBS**: Exchange Rates API Client implements the [Repository](https://martinfowler.com/eaaCatalog/repository.html) design pattern.
 
 ### API
 Single endpoint GraphQL API powered by [graphql-go](https://github.com/graphql-go/graphql):
@@ -108,7 +115,6 @@ Response:
 
 ## Developing
 
-## Developing
 ### First Install
 1 - Clone the project
 ```
@@ -128,7 +134,7 @@ make test
 ```
 **OBS**:
  - fee-crawler will run over port `9000`;  
- - redis service will run over port `6379`
+ - redis service will run over port `6379`.
 
 ### Reseting your environment
 If eventually you want to reset your environment, execute:
