@@ -74,6 +74,9 @@ func sanitizeDescription(rawDescription string) string {
 }
 
 // Normalizes and returns the fee value using BRL floating point criteria
-func normalizeAmountToBRL(fee string) string {
-	return strings.Replace(fee, ",", ".", 1)
+func normalizeAmountToBRL(rawAmount string) string {
+	normalizedAmount := strings.Replace(rawAmount, ",", ".", 1)
+
+	logger.Info(fmt.Sprintf("normalized amount: %s", normalizedAmount))
+	return strings.Replace(rawAmount, ",", ".", 1)
 }
