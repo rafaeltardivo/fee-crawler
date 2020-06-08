@@ -22,6 +22,7 @@ type databaseConnectionData struct {
 
 // Interface for database operations
 type databaseInterface interface {
+	getConnection() (*redis.Client, error)
 	getConnectionData() *databaseConnectionData
 	cacheRates(*ExchangeRatesResponsePayload) error
 	fetchCachedRates() ([]byte, error)
