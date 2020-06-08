@@ -36,10 +36,10 @@ A crawler that systematically browses SmartMEI website plan fee section.
 The SmartMEI fee crawler is powered by [colly](http://go-colly.org/). It has reduced crawl frontier and searches primarily for  **fees** content container element and maps it as a matrix:
 
 
-|      ...       | Plano x    | Plan  y |
-|----------------|------------|---------|
-| Transferência  |    ...     |   ...   |
-|      ...       |    ...     |   ...   |
+|      ...       | Plano x      | Plan  y |
+|----------------|--------------|---------|
+| Transferência  |    [1,1]     |   [1,2] |
+|      ...       |    [2,1]     |   [2,2] |
 
 
 
@@ -111,7 +111,9 @@ Response:
 }
 ```
 
-**OBS**: The API resolver uses parallelism to command actions to [Crawler](#crawler) and [Exchange rates API client](#exchange-rates-api-client) simultaneously.
+**OBS**: 
+ - The API resolver uses parallelism to command actions to [Crawler](#crawler) and [Exchange rates API client](#exchange-rates-api-client) simultaneously;
+ - `rates_date` represents the rate calculation date.
 
 ## Developing
 
