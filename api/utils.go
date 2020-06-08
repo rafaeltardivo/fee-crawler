@@ -13,7 +13,7 @@ func init() {
 	logger.SetFormatter(&logrus.JSONFormatter{})
 }
 
-// Truncates converted value as a decimal and returns a .xx "precision" string
+// Truncates converted value as a decimal and returns a .xx "precision" string.
 func toCurrencyValue(fee string, rate float64) string {
 	feeAmount, _ := decimal.NewFromString(fee)
 	rateAmount := decimal.NewFromFloat(rate)
@@ -21,8 +21,8 @@ func toCurrencyValue(fee string, rate float64) string {
 	return feeAmount.Mul(rateAmount).Truncate(2).String()
 }
 
-// Parses and converts values to FeeStruct
-func toAPIResponse(ratesResponse rates.RatesResponse, crawlerResponse crawler.CrawlerResponse) (*feeStruct, error) {
+// Parses and converts values to FeePayload.
+func toAPIResponse(ratesResponse rates.RatesResponse, crawlerResponse crawler.CrawlerResponse) (*feePayload, error) {
 
 	if ratesResponse.Err != nil {
 		return nil, ratesResponse.Err
@@ -32,7 +32,7 @@ func toAPIResponse(ratesResponse rates.RatesResponse, crawlerResponse crawler.Cr
 		return nil, crawlerResponse.Err
 	}
 
-	return &feeStruct{
+	return &feePayload{
 		RatesDate:   ratesResponse.Payload.Date,
 		Description: crawlerResponse.Description,
 		BRL:         crawlerResponse.Amount,

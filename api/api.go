@@ -11,8 +11,8 @@ import (
 	"github.com/rafaeltardivo/fee-crawler/rates"
 )
 
-// Fee type definition
-type feeStruct struct {
+// Fee payload definition.
+type feePayload struct {
 	RatesDate   string `json:"rates_date"`
 	Description string `json:"description,omitempty"`
 	BRL         string `json:"BRL"`
@@ -20,7 +20,7 @@ type feeStruct struct {
 	EUR         string `json:"EUR"`
 }
 
-// Fee GraphQL type definition
+// Fee GraphQL definition.
 var feeType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Fee",
 	Fields: graphql.Fields{
@@ -78,7 +78,7 @@ func feeResolver(p graphql.ResolveParams) (interface{}, error) {
 	crawlerChannel := make(chan crawler.CrawlerResponse)
 	ratesChannel := make(chan rates.RatesResponse)
 
-	go crawler.CrawlFeeData(domain, plan, crawlerChannel, &wg)
+	go crawler.GetFeeData(domain, plan, crawlerChannel, &wg)
 	crawlerResponse := <-crawlerChannel
 
 	go rates.GetRatesData(ratesChannel, &wg)

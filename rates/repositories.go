@@ -5,17 +5,17 @@ import (
 	"sync"
 )
 
-// Interface for rates repository
+// Interface for rates repository.
 type repositoryInterface interface {
 	fetchRates(databaseInterface, webClientInterface) (*ExchangeRatesResponsePayload, error)
 }
 
-// Exchange rates implementation of repositoryInterface
+// Exchange rates implementation of repositoryInterface.
 type exchangeRatesRepository struct{}
 
-// Returns rates payload
-// Action 1: Look for today rates on database
-// Action 2: Request today rates to exchange rates API
+// Returns rates payload.
+// Action 1: Look for today rates on database.
+// Action 2: Request today rates to exchange rates API.
 func (r *exchangeRatesRepository) fetchRates(db databaseInterface, api webClientInterface) (*ExchangeRatesResponsePayload, error) {
 	updateCache := false
 
@@ -45,12 +45,13 @@ func (r *exchangeRatesRepository) fetchRates(db databaseInterface, api webClient
 	return rates, nil
 }
 
-// Returns a new exchange rates repository according to repositoryInterface
+// Returns a new exchange rates repository.
 func newExchangeRatesRepository() repositoryInterface {
 	return &exchangeRatesRepository{}
 }
 
-// Rates command responsible for returning rates (from cache or api)
+// Rates command responsible for managing rates requests.
+// Passes the returned rates to channel.
 func GetRatesData(done chan RatesResponse, wg *sync.WaitGroup) {
 	defer close(done)
 	defer wg.Done()

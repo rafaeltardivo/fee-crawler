@@ -6,12 +6,12 @@ import (
 	"regexp"
 )
 
-// Interface for rate parsers
+// Interface for rate parsers.
 type parserInterface interface {
 	ParseRates([]byte) (interface{}, error)
 }
 
-// Exchange rates implementation of parser interface
+// Exchange rates implementation of parser interface.
 type exchangeRatesParser struct{}
 
 type ExchangeRatesCurrencyPayload struct {
@@ -19,14 +19,14 @@ type ExchangeRatesCurrencyPayload struct {
 	USD float64 `json:"USD"`
 }
 
-// Structured exchange rates payload
+// Exchange rates payload.
 type ExchangeRatesResponsePayload struct {
 	Rates ExchangeRatesCurrencyPayload `json:"rates"`
-	Base  string                      `json:"base"`
-	Date  string                      `json:"date"`
+	Base  string                       `json:"base"`
+	Date  string                       `json:"date"`
 }
 
-// Parses the received payload and returns a type-compatible interface
+// Parses the received payload and returns a type-compatible interface.
 func (p *exchangeRatesParser) ParseRates(data []byte) (interface{}, error) {
 	var payload ExchangeRatesResponsePayload
 
@@ -56,7 +56,7 @@ func (p *exchangeRatesParser) ParseRates(data []byte) (interface{}, error) {
 	return &payload, nil
 }
 
-// Creates and returns a new exchange rates parser according to parserInterface
+// Returns a new exchange rates parser.
 func newExchangeRatesParser() parserInterface {
 	return &exchangeRatesParser{}
 }

@@ -46,7 +46,7 @@ func TestCrawlIndexNotFoundError(t *testing.T) {
 	var container *goquery.Selection
 	crawler := &mockedFindPlanIndexCrawler{}
 
-	ret, err := crawl("Plan", container, crawler)
+	ret, err := crawlFee("Plan", container, crawler)
 
 	g.Expect(ret).To(gomega.Equal(""), "Return should be empty")
 	g.Expect(err).To(gomega.HaveOccurred(), "An error should have occurred")
@@ -68,7 +68,7 @@ func TestCrawlFeeNotFoundError(t *testing.T) {
 	var container *goquery.Selection
 	crawler := &mockedFindFeeErrorCrawler{}
 
-	ret, err := crawl("Plan", container, crawler)
+	ret, err := crawlFee("Plan", container, crawler)
 
 	g.Expect(ret).To(gomega.Equal(""), "Return should be empty")
 	g.Expect(err).To(gomega.HaveOccurred(), "An error should have occurred")
