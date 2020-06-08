@@ -5,4 +5,6 @@ up:
 up-detached:
 	docker-compose up -d
 test:
-	go test ./crawler/ ./rates/ ./api/
+	go test -v ./crawler/ ./rates/ ./api/
+destroy:
+	docker-compose down
