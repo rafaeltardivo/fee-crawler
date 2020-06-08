@@ -103,3 +103,19 @@ func TestToCurrencyValue(t *testing.T) {
 
 	g.Expect(value).To(gomega.Equal("3.75"), "USD should match converted ratesPayload currency value")
 }
+
+func TestValidateDomainInvalidDomain(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+
+	isValidDomain := validateDomain("www.invalid.com")
+
+	g.Expect(isValidDomain).To(gomega.BeFalse(), "isValidDomain should be false")
+}
+
+func TestValidateDomain(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+
+	isValidDomain := validateDomain("https://www.smartmei.com.br")
+
+	g.Expect(isValidDomain).To(gomega.BeTrue(), "isValidDomain should be true")
+}

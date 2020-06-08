@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -65,6 +66,11 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 func feeResolver(p graphql.ResolveParams) (interface{}, error) {
 	domain := p.Args["domain"].(string)
 	plan := p.Args["plan"].(string)
+
+	logger.Info(fmt.Sprintf("processing request with domain: %s plan: %s", domain, plan))
+	if !validateDomain(domain) {
+		return nil, apiError(fmt.Sprintf("invalid domain %s", domain))
+	}
 
 	var wg sync.WaitGroup
 	wg.Add(2)

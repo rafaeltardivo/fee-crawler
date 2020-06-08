@@ -40,3 +40,14 @@ func toAPIResponse(ratesResponse rates.RatesResponse, crawlerResponse crawler.Cr
 		EUR:         toCurrencyValue(crawlerResponse.Amount, ratesResponse.Payload.Rates.EUR),
 	}, nil
 }
+
+// Validates domain input
+func validateDomain(domain string) bool {
+	validDomains := []string{"http://www.smartmei.com.br", "https://www.smartmei.com.br"}
+	for _, item := range validDomains {
+		if domain == item {
+			return true
+		}
+	}
+	return false
+}
