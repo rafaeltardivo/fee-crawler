@@ -1,11 +1,17 @@
 package rates
 
 import (
+	"io/ioutil"
 	"os"
 	"testing"
 
 	"github.com/onsi/gomega"
 )
+
+func TestMain(m *testing.M) {
+	logger.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
 
 func TestNewRedisDatabaseClient(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)

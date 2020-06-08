@@ -1,11 +1,18 @@
 package crawler
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/onsi/gomega"
 )
+
+func TestMain(m *testing.M) {
+	logger.SetOutput(ioutil.Discard)
+	os.Exit(m.Run())
+}
 
 func TestNewSmartMEICollector(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
