@@ -80,12 +80,15 @@ func CrawlFeeData(domain string, plan string, done chan CrawlerResponse, wg *syn
 
 	if err != nil || container == nil {
 		done <- toCrawlerResponse("", "", crawlError(fmt.Sprintf("could not crawl domain: %s", domain)))
+		return
 	}
 
 	fee, err := crawl(plan, container.DOM.Children(), crawler)
 	if err != nil {
 		done <- toCrawlerResponse("", "", err)
+		return
 	}
+
 	amount, description, err := sanitizeFeeString(fee)
 	done <- toCrawlerResponse(amount, description, err)
 }
