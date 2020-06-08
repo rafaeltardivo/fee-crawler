@@ -20,7 +20,7 @@ type exchangeRateCurrencyPayload struct {
 }
 
 // Structured exchange rates payload
-type exchangeRateResponsePayload struct {
+type ExchangeRatesResponsePayload struct {
 	Rates exchangeRateCurrencyPayload `json:"rates"`
 	Base  string                      `json:"base"`
 	Date  string                      `json:"date"`
@@ -28,7 +28,7 @@ type exchangeRateResponsePayload struct {
 
 // Parses the received payload and returns a type-compatible interface
 func (p *exchangeRatesParser) ParseRates(data []byte) (interface{}, error) {
-	var payload exchangeRateResponsePayload
+	var payload ExchangeRatesResponsePayload
 
 	err := json.Unmarshal(data, &payload)
 	if err != nil {

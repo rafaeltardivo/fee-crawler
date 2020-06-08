@@ -4,7 +4,7 @@ import "fmt"
 
 // Interface for rates repository
 type repositoryInterface interface {
-	fetchRates(databaseInterface, webClientInterface) (*exchangeRateResponsePayload, error)
+	fetchRates(databaseInterface, webClientInterface) (*ExchangeRatesResponsePayload, error)
 }
 
 type exchangeRatesRepository struct{}
@@ -12,7 +12,7 @@ type exchangeRatesRepository struct{}
 // Returns rates payload
 // Action 1: Look for today rates on database
 // Action 2: Request today rates to exchange rates API
-func (r *exchangeRatesRepository) fetchRates(db databaseInterface, api webClientInterface) (*exchangeRateResponsePayload, error) {
+func (r *exchangeRatesRepository) fetchRates(db databaseInterface, api webClientInterface) (*ExchangeRatesResponsePayload, error) {
 	updateCache := false
 
 	raw, err := db.fetchCachedRates()
@@ -31,13 +31,13 @@ func (r *exchangeRatesRepository) fetchRates(db databaseInterface, api webClient
 	if err != nil {
 		return nil, err
 	}
-	rates, _ := parsedData.(*exchangeRateResponsePayload)
+	rates, _ := parsedData.(*ExchangeRatesResponsePayload)
 
 	if updateCache {
 		db.cacheRates(rates)
 	}
 
-	logger.Info(fmt.Sprintf("returning retrieved rates: %+v", *rates))
+	logger.Info(fmt.Sprintf("retrieved rates: %+v", *rates))
 	return rates, nil
 }
 
@@ -47,7 +47,7 @@ func newExchangeRatesRepository() repositoryInterface {
 }
 
 // Rates command responsible for returning rates (from cache or api)
-func GetRatesData() (*exchangeRateResponsePayload, error) {
+func GetRatesData() (*ExchangeRatesResponsePayload, error) {
 
 	db := newRedisDatabaseClient()
 	api := newExchangeRatesAPIClient()
