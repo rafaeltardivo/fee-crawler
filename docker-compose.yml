@@ -15,13 +15,13 @@ services:
     command: ./app
     restart: on-failure
     ports:
-      - "8000:8000"
+      - "9000:9000"
     depends_on:
       - redis
 
   redis:
     container_name: redis
-    image: redis:alpine3.12
+    image: redis:6-buster
     env_file:
       - .env
     command: redis-server --requirepass ${DB_PASSWORD}
