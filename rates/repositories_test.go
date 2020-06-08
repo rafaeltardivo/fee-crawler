@@ -151,7 +151,7 @@ func (m *mockedAPILatestRatesError) getEndpointData() *endpointData {
 	return nil
 }
 func (m *mockedAPILatestRatesError) fetchLatestRates() ([]byte, error) {
-	return nil, apiError("some mocked api error")
+	return nil, externalServiceError("some mocked api error")
 }
 func TestRepositoryInvalidCacheAndLatestRates(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
@@ -163,5 +163,5 @@ func TestRepositoryInvalidCacheAndLatestRates(t *testing.T) {
 	ret, err := repository.fetchRates(db, api)
 	g.Expect(ret).To(gomega.BeNil(), "Return should be nil")
 	g.Expect(err).To(gomega.HaveOccurred(), "An error should have occurred")
-	g.Expect(err).To(gomega.MatchError(apiError("some mocked api error")), "Error should be a parseError")
+	g.Expect(err).To(gomega.MatchError(externalServiceError("some mocked api error")), "Error should be a parseError")
 }

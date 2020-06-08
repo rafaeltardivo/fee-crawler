@@ -14,7 +14,7 @@ func databaseError(msg string) error {
 	return fmt.Errorf("Database error: %s", msg)
 }
 
-// Error wrapper for api errors
-func apiError(msg string) error {
-	return fmt.Errorf("API error: %s", msg)
+// Error wrapper for external service errors
+func externalServiceError(msg string) error {
+	return fmt.Errorf("External service error: %s", msg)
 }

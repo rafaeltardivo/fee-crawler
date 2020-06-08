@@ -126,18 +126,18 @@ func (api *exchangeRatesAPI) fetchLatestRates() ([]byte, error) {
 	request, err := http.Get(config.url + config.queryString)
 	if err != nil {
 		logger.Error(err)
-		return nil, apiError("API request failed")
+		return nil, externalServiceError("API request failed")
 	}
 	defer request.Body.Close()
 
 	if request.StatusCode != http.StatusOK {
-		return nil, apiError(fmt.Sprintf("HTTP Status code %d", request.StatusCode))
+		return nil, externalServiceError(fmt.Sprintf("HTTP Status code %d", request.StatusCode))
 	}
 
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
 		logger.Error(err)
-		return nil, apiError("could not parse body")
+		return nil, externalServiceError("could not parse body")
 	}
 
 	logger.Info("retrieved latest rates from api")
