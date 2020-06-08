@@ -14,14 +14,14 @@ type parserInterface interface {
 // Exchange rates implementation of parser interface
 type exchangeRatesParser struct{}
 
-type exchangeRateCurrencyPayload struct {
+type ExchangeRatesCurrencyPayload struct {
 	EUR float64 `json:"EUR"`
 	USD float64 `json:"USD"`
 }
 
 // Structured exchange rates payload
 type ExchangeRatesResponsePayload struct {
-	Rates exchangeRateCurrencyPayload `json:"rates"`
+	Rates ExchangeRatesCurrencyPayload `json:"rates"`
 	Base  string                      `json:"base"`
 	Date  string                      `json:"date"`
 }

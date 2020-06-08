@@ -31,7 +31,7 @@ func (m *mockedDatabaseCachedRates) cacheRates(payload *ExchangeRatesResponsePay
 }
 func (m *mockedDatabaseCachedRates) fetchCachedRates() ([]byte, error) {
 	responseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
@@ -46,7 +46,7 @@ func (m *mockedDatabaseCachedRates) fetchCachedRates() ([]byte, error) {
 func TestRepositoryCachedRates(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	expectedResponse := &ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
@@ -85,7 +85,7 @@ func (m *mockedAPILatestRates) getEndpointData() *endpointData {
 }
 func (m *mockedAPILatestRates) fetchLatestRates() ([]byte, error) {
 	responseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
@@ -100,7 +100,7 @@ func (m *mockedAPILatestRates) fetchLatestRates() ([]byte, error) {
 func TestRepositoryLatestRates(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	expectedResponse := &ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},

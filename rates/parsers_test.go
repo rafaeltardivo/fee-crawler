@@ -20,7 +20,7 @@ func TestNewExchangeRatesParserType(t *testing.T) {
 func TestParserRatesRatesError(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	exchangeRateResponseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.00,
 			USD: 0.00,
 		},
@@ -41,7 +41,7 @@ func TestParserRatesRatesError(t *testing.T) {
 func TestParserRatesDateError(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	exchangeRateResponseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
@@ -62,7 +62,7 @@ func TestParserRatesDateError(t *testing.T) {
 func TestParserRatesBaseError(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	exchangeRateResponseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
@@ -83,7 +83,7 @@ func TestParserRatesBaseError(t *testing.T) {
 func TestParserRates(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	exchangeRateResponseMock := ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},

@@ -9,7 +9,7 @@ import (
 func TestToRatesResponse(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 	ratesPayload := &ExchangeRatesResponsePayload{
-		Rates: exchangeRateCurrencyPayload{
+		Rates: ExchangeRatesCurrencyPayload{
 			EUR: 0.1687023416,
 			USD: 0.1875295229,
 		},
