@@ -23,7 +23,7 @@ type databaseConnectionData struct {
 // Interface for database operations
 type databaseInterface interface {
 	getConnectionData() *databaseConnectionData
-	cacheRates(*exchangeRateResponsePayload) error
+	cacheRates(*ExchangeRatesResponsePayload) error
 	fetchCachedRates() ([]byte, error)
 }
 
@@ -97,7 +97,7 @@ func (db *redisDatabase) fetchCachedRates() ([]byte, error) {
 }
 
 // Caches rates payload
-func (db *redisDatabase) cacheRates(payload *exchangeRateResponsePayload) error {
+func (db *redisDatabase) cacheRates(payload *ExchangeRatesResponsePayload) error {
 	client, err := db.getConnection()
 	if err != nil {
 		return databaseError("could not connect to database")
@@ -131,7 +131,7 @@ func (api *exchangeRatesAPI) fetchLatestRates() ([]byte, error) {
 	defer request.Body.Close()
 
 	if request.StatusCode != http.StatusOK {
-		return nil, apiError(fmt.Sprintf("HTTP Status code - %d", request.StatusCode))
+		return nil, apiError(fmt.Sprintf("HTTP Status code %d", request.StatusCode))
 	}
 
 	body, err := ioutil.ReadAll(request.Body)
