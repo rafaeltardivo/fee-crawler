@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
@@ -60,12 +61,15 @@ func (s *SmartMEIcrawlerStruct) findFee(plan string, index int, rows *goquery.Se
 }
 
 // Crawler command responsible for returning fee data
-func CrawlFeeData(domain string, plan string) (string, string, error) {
+func CrawlFeeData(domain string, plan string, done chan CrawlerResponse, wg *sync.WaitGroup) {
+	defer close(done)
+	defer wg.Done()
+
 	var container *colly.HTMLElement
 	collector := NewSmartMEICollector()
 	crawler := NewSmartMEICrawler()
 
-	logger.Info("starting crawl command")
+	logger.Info(fmt.Sprintf("crawling for plan: %s on: %s", plan, domain))
 	collector.OnError(func(r *colly.Response, err error) {
 		logger.Error(err)
 	})
@@ -74,21 +78,16 @@ func CrawlFeeData(domain string, plan string) (string, string, error) {
 	})
 	err := collector.Visit(domain)
 
-	if err != nil {
-		logger.Error(err)
-		return "", "", crawlError(fmt.Sprintf("could not crawl domain: %s", domain))
+	if err != nil || container == nil {
+		done <- toCrawlerResponse("", "", crawlError(fmt.Sprintf("could not crawl domain: %s", domain)))
 	}
 
-	if container == nil {
-		return "", "", crawlError("could not find container")
-	}
-
-	logger.Info(fmt.Sprintf("crawling for plan: %s on: %s", plan, domain))
 	fee, err := crawl(plan, container.DOM.Children(), crawler)
 	if err != nil {
-		return "", "", err
+		done <- toCrawlerResponse("", "", err)
 	}
-	return sanitizeFeeString(fee)
+	amount, description, err := sanitizeFeeString(fee)
+	done <- toCrawlerResponse(amount, description, err)
 }
 
 // Manages crawling proccess and returns raw fee string
