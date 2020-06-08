@@ -1,12 +1,16 @@
 package rates
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // Interface for rates repository
 type repositoryInterface interface {
 	fetchRates(databaseInterface, webClientInterface) (*ExchangeRatesResponsePayload, error)
 }
 
+// Exchange rates implementation of repositoryInterface
 type exchangeRatesRepository struct{}
 
 // Returns rates payload
@@ -47,12 +51,14 @@ func newExchangeRatesRepository() repositoryInterface {
 }
 
 // Rates command responsible for returning rates (from cache or api)
-func GetRatesData() (*ExchangeRatesResponsePayload, error) {
+func GetRatesData(done chan RatesResponse, wg *sync.WaitGroup) {
+	defer close(done)
+	defer wg.Done()
 
 	db := newRedisDatabaseClient()
 	api := newExchangeRatesAPIClient()
 	repository := newExchangeRatesRepository()
 
-	logger.Info("starting rates command")
-	return repository.fetchRates(db, api)
+	ratesPayload, err := repository.fetchRates(db, api)
+	done <- toRatesResponse(ratesPayload, err)
 }
