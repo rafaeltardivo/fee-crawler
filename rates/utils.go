@@ -9,3 +9,17 @@ var logger = logrus.New()
 func init() {
 	logger.SetFormatter(&logrus.JSONFormatter{})
 }
+
+// Rates response struct
+type RatesResponse struct {
+	Payload *ExchangeRatesResponsePayload
+	Err     error
+}
+
+// Converts values to RatesResponse
+func toRatesResponse(ratesPayload *ExchangeRatesResponsePayload, err error) RatesResponse {
+	return RatesResponse{
+		Payload: ratesPayload,
+		Err:     err,
+	}
+}
