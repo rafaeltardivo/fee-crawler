@@ -16,12 +16,12 @@ type feeCrawlerInterface interface {
 	findFee(string, int, *goquery.Selection) (string, error)
 }
 
-// SmartMEI implementation of fee crawler interface
-type SmartMEIcrawlerStruct struct{}
+// SmartMEI implementation of fee crawler interface.
+type SmartMEICrawler struct{}
 
-// Crawls header looking for plan element
-// The container is mapped as a table, so the plan index will be used in the fee search
-func (s *SmartMEIcrawlerStruct) findPlanIndex(plan string, rows *goquery.Selection) (int, error) {
+// Crawls header looking for plan element.
+// The container is mapped as a table, so the plan index will be used in the fee search.
+func (s *SmartMEICrawler) findPlanIndex(plan string, rows *goquery.Selection) (int, error) {
 	planIndex := -1
 
 	header := rows.First()
@@ -39,9 +39,9 @@ func (s *SmartMEIcrawlerStruct) findPlanIndex(plan string, rows *goquery.Selecti
 	return planIndex, nil
 }
 
-// Crawls rows looking for fee element
-// The container is mapped as a table, so the plan index is the search pivot
-func (s *SmartMEIcrawlerStruct) findFee(plan string, index int, rows *goquery.Selection) (string, error) {
+// Crawls rows looking for fee element.
+// The container is mapped as a table, so the plan index is the search pivot.
+func (s *SmartMEICrawler) findFee(plan string, index int, rows *goquery.Selection) (string, error) {
 	var fee = ""
 
 	rows.Children().EachWithBreak(func(i int, row *goquery.Selection) bool {
@@ -60,8 +60,9 @@ func (s *SmartMEIcrawlerStruct) findFee(plan string, index int, rows *goquery.Se
 	return fee, nil
 }
 
-// Crawler command responsible for returning fee data
-func CrawlFeeData(domain string, plan string, done chan CrawlerResponse, wg *sync.WaitGroup) {
+// Crawler command responsible for managing crawling proccess.
+// Passes the crawled values to channel.
+func GetFeeData(domain string, plan string, done chan CrawlerResponse, wg *sync.WaitGroup) {
 	defer close(done)
 	defer wg.Done()
 
@@ -83,7 +84,7 @@ func CrawlFeeData(domain string, plan string, done chan CrawlerResponse, wg *syn
 		return
 	}
 
-	fee, err := crawl(plan, container.DOM.Children(), crawler)
+	fee, err := crawlFee(plan, container.DOM.Children(), crawler)
 	if err != nil {
 		done <- toCrawlerResponse("", "", err)
 		return
@@ -93,8 +94,8 @@ func CrawlFeeData(domain string, plan string, done chan CrawlerResponse, wg *syn
 	done <- toCrawlerResponse(amount, description, err)
 }
 
-// Manages crawling proccess and returns raw fee string
-func crawl(plan string, rows *goquery.Selection, crawler feeCrawlerInterface) (string, error) {
+// Crawls and returns fee raw string.
+func crawlFee(plan string, rows *goquery.Selection, crawler feeCrawlerInterface) (string, error) {
 
 	index, err := crawler.findPlanIndex(plan, rows)
 	if err != nil {
@@ -112,7 +113,7 @@ func crawl(plan string, rows *goquery.Selection, crawler feeCrawlerInterface) (s
 	return fee, nil
 }
 
-// Returns a new SmartMEICollector
+// Returns a new SmartMEICollector.
 func NewSmartMEICollector() *colly.Collector {
 	agents := [4]string{
 		"Chrome 70.0.3538.77",
@@ -130,7 +131,7 @@ func NewSmartMEICollector() *colly.Collector {
 	)
 }
 
-// Returns a new SmartMEI Crawler
+// Returns a new SmartMEI Crawler.
 func NewSmartMEICrawler() feeCrawlerInterface {
-	return &SmartMEIcrawlerStruct{}
+	return &SmartMEICrawler{}
 }

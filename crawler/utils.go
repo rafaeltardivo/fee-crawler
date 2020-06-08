@@ -14,14 +14,14 @@ func init() {
 	logger.SetFormatter(&logrus.JSONFormatter{})
 }
 
-// Crawler response struct
+// Crawler response struct.
 type CrawlerResponse struct {
 	Amount      string
 	Description string
 	Err         error
 }
 
-// Sanitizes and returns fee amount and description
+// Sanitizes and returns fee amount and description.
 func sanitizeFeeString(rawFee string) (string, string, error) {
 	description := ""
 
@@ -58,7 +58,7 @@ func sanitizeFeeString(rawFee string) (string, string, error) {
 	return normalizedAmount, description, nil
 }
 
-// Sanitizes and returns fee amount
+// Sanitizes and returns fee amount.
 func sanitizeAmount(rawAmount string) (string, error) {
 	re := regexp.MustCompile(`[0-9,]+[0-9]{2}`)
 	fee := re.FindStringSubmatch(rawAmount)
@@ -72,7 +72,7 @@ func sanitizeAmount(rawAmount string) (string, error) {
 	return amount, nil
 }
 
-// Sanitizes and returns fee description
+// Sanitizes and returns fee description.
 func sanitizeDescription(rawDescription string) string {
 	description := strings.TrimSpace(rawDescription)
 
@@ -80,7 +80,7 @@ func sanitizeDescription(rawDescription string) string {
 	return description
 }
 
-// Normalizes and returns the fee value using BRL floating point criteria
+// Normalizes and returns the fee value using BRL floating point criteria.
 func normalizeAmountToBRL(rawAmount string) string {
 	normalizedAmount := strings.Replace(rawAmount, ",", ".", 1)
 
@@ -88,7 +88,7 @@ func normalizeAmountToBRL(rawAmount string) string {
 	return strings.Replace(rawAmount, ",", ".", 1)
 }
 
-// Converts values to CrawlerResponse
+// Converts values to CrawlerResponse.
 func toCrawlerResponse(amount string, description string, err error) CrawlerResponse {
 	return CrawlerResponse{
 		Amount:      amount,
