@@ -54,43 +54,59 @@ func (s *SmartMEIcrawlerStruct) findFee(plan string, index int, rows *goquery.Se
 	})
 
 	if fee == "" {
-		return fee, crawlError(fmt.Sprintf("fee not found"))
+		return fee, crawlError("fee not found")
 	}
 	return fee, nil
 }
 
-// Crawling proccess enntrypoint
-// Returns raw fee
-func CrawlFee(plan string) (string, error) {
+// Crawler command responsible for returning fee data
+func CrawlFeeData(domain string, plan string) (string, string, error) {
 	var container *colly.HTMLElement
-	crawler := NewSmartMEICrawler()
 	collector := NewSmartMEICollector()
+	crawler := NewSmartMEICrawler()
 
+	logger.Info("starting crawl command")
+	collector.OnError(func(r *colly.Response, err error) {
+		logger.Error(err)
+	})
 	collector.OnHTML(`div[id="tarifas-2"]`, func(e *colly.HTMLElement) {
 		container = e
 	})
-	collector.Visit("http://smartmei.com.br/")
+	err := collector.Visit(domain)
 
-	if container == nil {
-		return "", crawlError(fmt.Sprintf("container not found"))
+	if err != nil {
+		logger.Error(err)
+		return "", "", crawlError(fmt.Sprintf("could not crawl domain: %s", domain))
 	}
 
-	return crawl(plan, container.DOM.Children(), crawler)
+	if container == nil {
+		return "", "", crawlError("could not find container")
+	}
+
+	logger.Info(fmt.Sprintf("crawling for plan: %s on: %s", plan, domain))
+	fee, err := crawl(plan, container.DOM.Children(), crawler)
+	if err != nil {
+		return "", "", err
+	}
+	return sanitizeFeeString(fee)
 }
 
-// Manages crawling proccess and returns fee
+// Manages crawling proccess and returns raw fee string
 func crawl(plan string, rows *goquery.Selection, crawler feeCrawlerInterface) (string, error) {
 
 	index, err := crawler.findPlanIndex(plan, rows)
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
 
 	fee, err := crawler.findFee(plan, index, rows)
 	if err != nil {
+		logger.Error(err)
 		return "", err
 	}
 
+	logger.Info(fmt.Sprintf("retrieved fee string: %s", fee))
 	return fee, nil
 }
 
@@ -108,7 +124,6 @@ func NewSmartMEICollector() *colly.Collector {
 
 	return colly.NewCollector(
 		colly.UserAgent(userAgent),
-		colly.AllowedDomains("smartmei.com.br", "www.smartmei.com.br"),
 		colly.MaxDepth(2),
 	)
 }
