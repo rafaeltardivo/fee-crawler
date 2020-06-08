@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  crawler:
-    container_name: crawler
+  fee-crawler:
+    container_name: fee-crawler
     env_file:
       - .env
     environment:
