@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  fee-crawler:
+    container_name: fee-crawler
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - EXCHANGE_RATES_URL=${EXCHANGE_RATES_URL}
+      - EXCHANGE_RATES_QUERYSTRING=${EXCHANGE_RATES_QUERYSTRING}
+    build: .
+    command: ./app
+    restart: on-failure
+    ports:
+      - "9000:9000"
+    depends_on:
+      - redis
+
+  redis:
+    container_name: redis
+    image: redis:6-buster
+    env_file:
+      - .env
+    command: redis-server --requirepass ${DB_PASSWORD}
+    restart: on-failure
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+
+        
