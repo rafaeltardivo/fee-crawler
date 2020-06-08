@@ -9,10 +9,28 @@ A crawler that systematically browses SmartMEI website plan fee section.
 	- [Exchange rates API client](#exchange-rates-api-client)
 	- [API](#api)
 - [Developing](#developing)
-	- [First Install](#first-install)
+    - [First Install](#first-install)
 	- [Running the tests](#running-the-tests)
-	- [Reseting your environment](#running-the-tests)
+	- [Reseting your environment](#reseting-your-environment)
+- [More API Request Examples](#more-api-request-examples)
+
     
+
+## Technology
+- [Golang](https://www.python.org/) 1.14
+- [go-colly](http://go-colly.org/docs/) v1.2.0
+- [graphql-go](https://github.com/graphql-go/graphql) v0.7.9
+- [gocron](https://github.com/go-co-op/gocron) v0.2.0
+- [goquery](github.com/PuerkitoBio/goquery) v1.5.1
+- [decimal](https://github.com/shopspring/decimal) v1.2.0
+- [logrus](github.com/sirupsen/logrus) v1.6.0
+- [gomega](github.com/onsi/gomega) v1.10.1
+- [Docker](https://www.docker.com/) 19.03.6
+- [Docker Compose](https://docs.docker.com/compose/) 1.25.0
+- [Redis](https://redislabs.com/) 6.0
+
+
+## How it Works
 
 ### Crawler
 The SmartMEI fee crawler is powered by [colly](http://go-colly.org/). It has reduced crawl frontier and searches primarily for  **fees** content container element and maps it as a matrix.
@@ -86,4 +104,64 @@ Response:
 }
 ```
 
-**OBS**: The resolver uses parallelism to command actions to [Crawler](#crawler) and [Exchange rates API client](#exchange-rates-api-client) simultaneously.
+**OBS**: The API resolver uses parallelism to command actions to [Crawler](#crawler) and [Exchange rates API client](#exchange-rates-api-client) simultaneously.
+
+## Developing
+
+## Developing
+### First Install
+1 - Clone the project
+```
+git clone https://github.com/rafaeltardivo/fee-crawler  
+```
+2 - Build the application:  
+```
+make build
+```  
+4 - Run the application:  
+```  
+make up
+```  
+### Running the tests
+```
+make test  
+```
+**OBS**:
+ - fee-crawler will run over port `9000`;  
+ - redis service will run over port `6379`
+
+### Reseting your environment
+If eventually you want to reset your environment, execute:
+```
+make destroy
+```
+After that, in order to run the application you'll need repeat the [First Install](#first-install) proccess.
+
+### More API request examples
+
+Query for plan **Básico** transfer fee (all fields): 
+
+```bash
+curl --request POST \
+  --url 'http://localhost:9000/graphql?query=%7Btransfer(domain%3A%22https%3A%2F%2Fwww.smartmei.com.br%22%2C%20plan%3A%22B%C3%A1sico%22)%7Bdescription%2C%20rates_date%2CBRL%2CUSD%2CEUR%7D%7D'
+```
+
+Query for plan **Profissional** transfer fee (all fields):
+
+```bash
+curl --request POST \
+  --url 'http://localhost:9000/graphql?query=%7Btransfer(domain%3A%22https%3A%2F%2Fwww.smartmei.com.br%22%2C%20plan%3A%22Profissional%22)%7Bdescription%2C%20rates_date%2CBRL%2CUSD%2CEUR%7D%7D'
+```
+
+Query for plan **Básico** transfer fee description:
+```bash
+curl --request POST \
+  --url 'http://localhost:9000/graphql?query=%7Btransfer(domain%3A%22https%3A%2F%2Fwww.smartmei.com.br%22%2C%20plan%3A%22B%C3%A1sico%22)%7Bdescription%2C%7D%7D'
+```
+
+Query for plan **Profissional** transfer fee (USD and EUR):
+
+```bash
+curl --request POST \
+  --url 'http://localhost:9000/graphql?query=%7Btransfer(domain%3A%22https%3A%2F%2Fwww.smartmei.com.br%22%2C%20plan%3A%22Profissional%22)%7BUSD%2CEUR%7D%7D'
+```
